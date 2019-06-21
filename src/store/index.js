@@ -13,7 +13,11 @@ const store = createStore(
       thunk.withExtraArgument({ getFirebase, getFirestore }),
       logger
     ),
-    reactReduxFirebase(firebase),
+    reactReduxFirebase(firebase, {
+      useFirestoreForProfile: true,
+      userProfile: "users",
+      attachAuthIsReady: true
+    }),
     reduxFirestore(firebase)
   )
 );

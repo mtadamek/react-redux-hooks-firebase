@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "./components/layout/Navbar";
 import Welcome from "./components/auth/Welcome";
+import PostModal from "./components/dashboard/PostModal";
 import {
   Container,
   Button,
@@ -21,7 +22,6 @@ import {
   CheckCircle,
   CheckCircleOutline
 } from "@material-ui/icons";
-import { createItem, deleteItem, updateItem } from "./actions/auth";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,6 +39,14 @@ const App = () => {
   const { isEmpty } = useSelector(state => state.firebase.auth);
   const state = useSelector(state => state);
   const dispatch = useDispatch();
+  const { user } = useSelector(state => state.auth);
+  // useEffect(() => {
+  //   return () => {
+  //     effect;
+  //   };
+  // }, [user]);
+  console.log(state);
+
   // const classes = useStyles();
   console.log(state);
   // const list = todo.map((t, i) => (
@@ -114,6 +122,7 @@ const App = () => {
     <Router>
       <Route path="/" exact component={Home} />
       <Route path="/new" component={New} />
+      <PostModal />
     </Router>
   );
 };

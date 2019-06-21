@@ -4,7 +4,10 @@ import {
   LOGIN_ERROR,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_ERROR
+  LOGOUT_ERROR,
+  SIGNUP_REQUEST,
+  SIGNUP_SUCCESS,
+  SIGNUP_ERROR
 } from "../constants";
 
 export const logIn = ({ email, password }) => async (
@@ -15,10 +18,22 @@ export const logIn = ({ email, password }) => async (
   try {
     dispatch(logInRequest());
     const firebase = getFirebase();
-    const user = await firebase
+    const firestore = getFirestore();
+
+    const auth = await firebase
       .auth()
       .signInWithEmailAndPassword(email, password);
-    dispatch(logInSuccess(user));
+
+    const doc = await firestore
+      .collection("users")
+      .doc(auth.user.uid)
+      .get();
+
+    if (!doc.exists) throw new Error("User data do not exist!");
+
+    const user = doc.data();
+
+    dispatch(logInSuccess({ ...user, id: auth.user.uid }));
   } catch (error) {
     dispatch(logInError(error));
   }
@@ -36,6 +51,44 @@ const logInSuccess = user => ({
 
 const logInError = error => ({
   type: LOGIN_ERROR,
+  payload: error
+});
+
+export const signUp = ({ email, password, firstname, lastname }) => async (
+  dispatch,
+  getState,
+  { getFirebase, getFirestore }
+) => {
+  try {
+    dispatch(signUpRequest());
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+    const { user } = await firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
+    await firestore
+      .collection("users")
+      .doc(user.uid)
+      .set({ firstname, lastname });
+
+    dispatch(signUpSuccess({ id: user.uid, firstname, lastname }));
+  } catch (error) {
+    dispatch(signUpError(error));
+  }
+};
+
+const signUpRequest = () => ({
+  type: SIGNUP_REQUEST,
+  payload: null
+});
+
+const signUpSuccess = user => ({
+  type: SIGNUP_SUCCESS,
+  payload: user
+});
+
+const signUpError = error => ({
+  type: SIGNUP_ERROR,
   payload: error
 });
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -7,14 +8,16 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { blue } from "@material-ui/core/colors";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
-import { logIn } from "../../actions/auth";
+import { StyledFirebaseAuth } from "react-firebaseui";
+import firebase from "../../firebase";
+import SignIn from "./SignIn";
+import SignUp from "./SignUp";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,11 +60,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const uiConfig = {
+  signInFlow: "popup",
+  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+};
+
 export default function SignInSide() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { loading } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
+  const [signUp, setSignUp] = useState(false);
   const classes = useStyles();
 
   return (
@@ -74,71 +79,19 @@ export default function SignInSide() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            {signUp ? "Sign up" : "Sign in"}
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={email}
-              autoFocus
-              onChange={e => setEmail(e.target.value)}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              value={password}
-              autoComplete="current-password"
-              onChange={e => setPassword(e.target.value)}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <div className={classes.wrapper}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                disabled={loading}
-                onClick={() => dispatch(logIn({ email, password }))}
-              >
-                Sign In
-              </Button>
-              {loading && (
-                <CircularProgress
-                  size={24}
-                  className={classes.buttonProgress}
-                />
-              )}
-            </div>
-
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
+          {signUp ? (
+            <SignUp setSignUp={setSignUp} />
+          ) : (
+            <SignIn setSignUp={setSignUp} />
+          )}
+          <div style={{ marginTop: 10 }}>or</div>
+          <StyledFirebaseAuth
+            uiConfig={uiConfig}
+            firebaseAuth={firebase.auth()}
+            style={{ width: "100%" }}
+          />
         </div>
       </Grid>
     </Grid>

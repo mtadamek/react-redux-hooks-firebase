@@ -4,7 +4,10 @@ import {
   LOGIN_ERROR,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_ERROR
+  LOGOUT_ERROR,
+  SIGNUP_REQUEST,
+  SIGNUP_SUCCESS,
+  SIGNUP_ERROR
 } from "../constants";
 
 const defaultState = { user: null, loading: false, error: null };
@@ -19,6 +22,15 @@ const authReducer = (state = defaultState, action) => {
       return { ...state, loading: false, user: payload };
     }
     case LOGIN_ERROR: {
+      return { ...state, loading: false, error: payload };
+    }
+    case SIGNUP_REQUEST: {
+      return { ...state, loading: true, error: null };
+    }
+    case SIGNUP_SUCCESS: {
+      return { ...state, loading: false };
+    }
+    case SIGNUP_ERROR: {
       return { ...state, loading: false, error: payload };
     }
     case LOGOUT_REQUEST: {

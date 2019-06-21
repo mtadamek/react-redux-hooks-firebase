@@ -4,13 +4,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import { ExitToApp, Dashboard, AddBox } from "@material-ui/icons";
 import { logOut } from "../../actions/auth";
+import { postModalOpen } from "../../actions/posts";
 
 const SignedInMenu = () => {
   const dispatch = useDispatch();
 
   const linksList = [
     { name: "Strona główna", to: "/", icon: <Dashboard /> },
-    { name: "Nowy post", to: "/new", icon: <AddBox /> },
+    {
+      name: "Nowy post",
+      to: "/new",
+      icon: <AddBox />,
+      click: () => dispatch(postModalOpen(true))
+    },
     {
       name: "Wyloguj",
       to: "/",
