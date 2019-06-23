@@ -13,7 +13,6 @@ const SignedInMenu = () => {
     { name: "Strona główna", to: "/", icon: <Dashboard /> },
     {
       name: "Nowy post",
-      to: "/new",
       icon: <AddBox />,
       click: () => dispatch(postModalOpen(true))
     },
@@ -25,18 +24,15 @@ const SignedInMenu = () => {
     }
   ];
 
-  const list = linksList.map(link => (
-    <ListItem
-      button
-      key={link.name}
-      component={Link}
-      to={link.to}
-      onClick={link.click}
-    >
-      <ListItemIcon>{link.icon}</ListItemIcon>
-      <ListItemText primary={link.name} />
-    </ListItem>
-  ));
+  const list = linksList.map(link => {
+    const props = link.to ? { component: Link, to: link.to } : {};
+    return (
+      <ListItem button key={link.name} onClick={link.click} {...props}>
+        <ListItemIcon>{link.icon}</ListItemIcon>
+        <ListItemText primary={link.name} />
+      </ListItem>
+    );
+  });
 
   return <List>{list}</List>;
 };

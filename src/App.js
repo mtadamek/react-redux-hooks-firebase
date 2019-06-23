@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Navbar from "./components/layout/Navbar";
 import Welcome from "./components/auth/Welcome";
-import PostModal from "./components/dashboard/PostModal";
+import PostDialog from "./components/posts/PostDialog";
+import Posts from "./components/posts";
 import {
   Container,
   Button,
@@ -45,7 +45,6 @@ const App = () => {
   //     effect;
   //   };
   // }, [user]);
-  console.log(state);
 
   // const classes = useStyles();
   console.log(state);
@@ -104,25 +103,12 @@ const App = () => {
     </React.Fragment>
   );
 
-  const Home = () => (
-    <Navbar>
-      <div>Home</div>
-    </Navbar>
-  );
-
-  const New = () => (
-    <Navbar>
-      <div>New</div>
-    </Navbar>
-  );
-
   return isEmpty ? (
     <Welcome />
   ) : (
     <Router>
-      <Route path="/" exact component={Home} />
-      <Route path="/new" component={New} />
-      <PostModal />
+      <Route path="/" exact component={Posts} />
+      <PostDialog />
     </Router>
   );
 };
